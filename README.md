@@ -2,7 +2,6 @@
 
 An interactive web application that explores how our perception of time changes as we age, using two different mathematical models to visualize this phenomenon.
 
-
 ## Features
 
 - 📊 Interactive graph showing time perception changes with age
@@ -12,6 +11,9 @@ An interactive web application that explores how our perception of time changes 
 - 🌐 Bilingual support (English/Spanish)
 - 📱 Fully responsive design
 - 🎨 Beautiful UI with smooth animations and transitions
+- ⚡ Real-time calculations and updates
+- 🔧 Customizable maximum age (1-200 years)
+- 🎯 Quick presets for common life expectancies (80 and 100 years)
 
 ## Mathematical Models
 
@@ -20,7 +22,7 @@ This model suggests that our perception of time is logarithmic, meaning each sub
 
 ```
 S1 = K1 * ln(age)
-where K1 = 80 / ln(80)
+where K1 = maxAge / ln(maxAge)
 ```
 
 ### Proportional to Subjective Time
@@ -28,8 +30,16 @@ This model proposes that our perception of time is related to the ratio of a tim
 
 ```
 S2 = sqrt(2 * K2 * age)
-where K2 = 80 * 80 / (2 * 80)
+where K2 = maxAge * maxAge / (2 * maxAge)
 ```
+
+## Technologies Used
+
+- React 18 with TypeScript
+- Vite for fast development and building
+- Tailwind CSS for styling
+- Recharts for data visualization
+- Lucide React for icons
 
 ## Development
 
@@ -37,10 +47,10 @@ To run this project locally:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jux310/TimePerception.git
+git clone https://github.com/yourusername/time-perception-calculator.git
 
 # Navigate to project directory
-cd TimePerception
+cd time-perception-calculator
 
 # Install dependencies
 npm install
