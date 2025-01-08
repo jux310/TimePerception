@@ -35,27 +35,38 @@ function generateChartData(maxAge: number) {
 function App() {
   const [age, setAge] = useState<number>(25);
   const [maxAge, setMaxAge] = useState<number>(80);
+  const [ageInput, setAgeInput] = useState<string>('25');
+  const [maxAgeInput, setMaxAgeInput] = useState<string>('80');
   const [method, setMethod] = useState<'real' | 'subjective'>('subjective');
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingMax, setIsEditingMax] = useState(false);
   const [lang, setLang] = useState<'en' | 'es'>('en');
-  const perception = calculateTimePerception(age, maxAge);
-  const chartData = generateChartData(maxAge);
+  const perception = age && maxAge ? calculateTimePerception(age, maxAge) : null;
+  const chartData = maxAge ? generateChartData(maxAge) : [];
   const t = translations[lang];
 
   const activeColor = method === 'real' ? 'cyan' : 'purple';
-  const perceptionValue = method === 'real' ? perception.realTimeModel : perception.subjectiveTimeModel;
+  const perceptionValue = perception ? (method === 'real' ? perception.realTimeModel : perception.subjectiveTimeModel) : '';
 
   const handleAgeChange = (value: string) => {
-    const newAge = Math.min(maxAge, Math.max(1, Number(value) || 1));
-    setAge(newAge);
+    setAgeInput(value);
+    const parsed = parseInt(value);
+    if (!isNaN(parsed)) {
+      const newAge = Math.min(maxAge, Math.max(1, parsed));
+      setAge(newAge);
+    }
   };
 
   const handleMaxAgeChange = (value: string) => {
-    const newMaxAge = Math.min(200, Math.max(1, Number(value) || 80));
-    setMaxAge(newMaxAge);
-    if (age > newMaxAge) {
-      setAge(newMaxAge);
+    setMaxAgeInput(value);
+    const parsed = parseInt(value);
+    if (!isNaN(parsed)) {
+      const newMaxAge = Math.min(200, Math.max(1, parsed));
+      setMaxAge(newMaxAge);
+      if (age > newMaxAge) {
+        setAge(newMaxAge);
+        setAgeInput(newMaxAge.toString());
+      }
     }
   };
 
@@ -115,9 +126,14 @@ function App() {
               {isEditingMax ? (
                 <input
                   type="number"
-                  value={maxAge}
+                  value={maxAgeInput}
                   onChange={(e) => handleMaxAgeChange(e.target.value)}
-                  onBlur={() => setIsEditingMax(false)}
+                  onBlur={() => {
+                    setIsEditingMax(false);
+                    if (maxAgeInput === '') {
+                      setMaxAgeInput(maxAge.toString());
+                    }
+                  }}
                   onKeyDown={(e) => e.key === 'Enter' && setIsEditingMax(false)}
                   autoFocus
                   className={`w-24 text-xl font-bold bg-transparent border-b-2 focus:outline-none text-center ${
@@ -176,9 +192,14 @@ function App() {
               {isEditing ? (
                 <input
                   type="number"
-                  value={age}
+                  value={ageInput}
                   onChange={(e) => handleAgeChange(e.target.value)}
-                  onBlur={() => setIsEditing(false)}
+                  onBlur={() => {
+                    setIsEditing(false);
+                    if (ageInput === '') {
+                      setAgeInput(age.toString());
+                    }
+                  }}
                   onKeyDown={(e) => e.key === 'Enter' && setIsEditing(false)}
                   autoFocus
                   className={`w-24 text-4xl font-bold bg-transparent border-b-2 focus:outline-none text-center ${
@@ -234,8 +255,7 @@ function App() {
                   <ReferenceLine
                     x={age}
                     stroke={method === 'real' ? '#a855f7' : '#22d3ee'}
-                    strokeDasharray="3 3"
-                    label={{ value: `${t.enterAge}: ${age}`, position: 'top', fill: method === 'real' ? '#a855f7' : '#22d3ee' }}
+                    strokeDasharray="3 3" 
                   />
                   <ReferenceLine
                     y={parseFloat(perceptionValue)}
