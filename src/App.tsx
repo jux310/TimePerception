@@ -4,13 +4,13 @@ import { Clock, Info, Languages } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts';
 import { translations } from './translations';
 
-function calculateTimePerception(age: number) {
+function calculateTimePerception(age: number, maxAge: number) {
   // Model 1: Proportional to real time
-  const K1 = 80 / Math.log(80);
+  const K1 = maxAge / Math.log(maxAge);
   const S1 = K1 * Math.log(age);
 
   // Model 2: Proportional to subjective time
-  const K2 = 80 * 80 / (2 * 80);
+  const K2 = maxAge * maxAge / (2 * maxAge);
   const S2 = Math.sqrt(2 * K2 * age);
 
   return {
@@ -19,10 +19,10 @@ function calculateTimePerception(age: number) {
   };
 }
 
-function generateChartData() {
+function generateChartData(maxAge: number) {
   const data = [];
-  for (let i = 1; i <= 80; i++) {
-    const perception = calculateTimePerception(i);
+  for (let i = 1; i <= maxAge; i++) {
+    const perception = calculateTimePerception(i, maxAge);
     data.push({
       age: i,
       realTime: parseFloat(perception.realTimeModel),
@@ -34,19 +34,29 @@ function generateChartData() {
 
 function App() {
   const [age, setAge] = useState<number>(25);
+  const [maxAge, setMaxAge] = useState<number>(80);
   const [method, setMethod] = useState<'real' | 'subjective'>('subjective');
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingMax, setIsEditingMax] = useState(false);
   const [lang, setLang] = useState<'en' | 'es'>('en');
-  const perception = calculateTimePerception(age);
-  const chartData = generateChartData();
+  const perception = calculateTimePerception(age, maxAge);
+  const chartData = generateChartData(maxAge);
   const t = translations[lang];
 
   const activeColor = method === 'real' ? 'cyan' : 'purple';
   const perceptionValue = method === 'real' ? perception.realTimeModel : perception.subjectiveTimeModel;
 
   const handleAgeChange = (value: string) => {
-    const newAge = Math.min(80, Math.max(1, Number(value) || 1));
+    const newAge = Math.min(maxAge, Math.max(1, Number(value) || 1));
     setAge(newAge);
+  };
+
+  const handleMaxAgeChange = (value: string) => {
+    const newMaxAge = Math.min(200, Math.max(1, Number(value) || 80));
+    setMaxAge(newMaxAge);
+    if (age > newMaxAge) {
+      setAge(newMaxAge);
+    }
   };
 
   return (
@@ -100,10 +110,62 @@ function App() {
             </div>
 
             <h2 className="text-2xl font-semibold mb-6 text-slate-200">{t.enterAge}</h2>
+            <div className="mb-6 flex items-center gap-4">
+              <span className="text-slate-400">{t.maxAge}:</span>
+              {isEditingMax ? (
+                <input
+                  type="number"
+                  value={maxAge}
+                  onChange={(e) => handleMaxAgeChange(e.target.value)}
+                  onBlur={() => setIsEditingMax(false)}
+                  onKeyDown={(e) => e.key === 'Enter' && setIsEditingMax(false)}
+                  autoFocus
+                  className={`w-24 text-xl font-bold bg-transparent border-b-2 focus:outline-none text-center ${
+                    method === 'real' ? 'text-purple-400 border-purple-400' : 'text-cyan-400 border-cyan-400'
+                  }`}
+                />
+              ) : (
+                <span
+                  onClick={() => setIsEditingMax(true)}
+                  className={`text-xl font-bold cursor-pointer hover:opacity-80 ${
+                    method === 'real' ? 'text-purple-400' : 'text-cyan-400'
+                  }`}
+                >
+                  {maxAge}
+                </span>
+              )}
+              <span className="text-slate-400">{t.yearsOld}</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleMaxAgeChange('80')}
+                  className={`px-3 py-1 rounded border ${
+                    maxAge === 80
+                      ? method === 'real'
+                        ? 'bg-purple-400/10 border-purple-400 text-purple-400'
+                        : 'bg-cyan-400/10 border-cyan-400 text-cyan-400'
+                      : 'border-slate-600 text-slate-400 hover:border-slate-400'
+                  }`}
+                >
+                  80
+                </button>
+                <button
+                  onClick={() => handleMaxAgeChange('100')}
+                  className={`px-3 py-1 rounded border ${
+                    maxAge === 100
+                      ? method === 'real'
+                        ? 'bg-purple-400/10 border-purple-400 text-purple-400'
+                        : 'bg-cyan-400/10 border-cyan-400 text-cyan-400'
+                      : 'border-slate-600 text-slate-400 hover:border-slate-400'
+                  }`}
+                >
+                  100
+                </button>
+              </div>
+            </div>
             <input
               type="range"
               min="1"
-              max="80"
+              max={maxAge}
               value={age}
               onChange={(e) => setAge(Number(e.target.value))}
               className={`w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer ${

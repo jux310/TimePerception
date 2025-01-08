@@ -2,7 +2,6 @@
 
 An interactive web application that explores how our perception of time changes as we age, using two different mathematical models to visualize this phenomenon.
 
-![Time Perception Calculator](https://i.imgur.com/YourScreenshot.png)
 
 ## Features
 
@@ -13,15 +12,6 @@ An interactive web application that explores how our perception of time changes 
 - 🌐 Bilingual support (English/Spanish)
 - 📱 Fully responsive design
 - 🎨 Beautiful UI with smooth animations and transitions
-
-## Technologies Used
-
-- React 18
-- TypeScript
-- Tailwind CSS
-- Recharts for data visualization
-- Lucide React for icons
-- Vite for build tooling
 
 ## Mathematical Models
 
@@ -66,8 +56,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
-
-## Credits
-
-- Time perception research: [Wikipedia - Time Perception: Changes with Age](https://en.wikipedia.org/wiki/Time_perception#Changes_with_age)
-- Icons: [Lucide React](https://lucide.dev)

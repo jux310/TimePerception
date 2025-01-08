@@ -5,6 +5,7 @@ type Translations = {
     enterAge: string;
     yearsOld: string;
     result: string;
+    maxAge: string;
     perceivedAge: string;
     graph: string;
     about: {
@@ -28,6 +29,7 @@ export const translations: Translations = {
     enterAge: "Enter Your Age",
     yearsOld: "years old",
     result: "Result",
+    maxAge: "Maximum Age",
     perceivedAge: "Perceived Age",
     graph: "Time Perception Graph",
     about: {
@@ -48,6 +50,7 @@ export const translations: Translations = {
     enterAge: "Ingresa tu Edad",
     yearsOld: "años",
     result: "Resultado",
+    maxAge: "Edad Máxima",
     perceivedAge: "Edad Percibida",
     graph: "Gráfico de Percepción del Tiempo",
     about: {
